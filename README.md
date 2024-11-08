@@ -1,10 +1,10 @@
 # RFM Segmentation Project
 
 ## Objectives
-The goal of this project is to perform RFM (Recency, Frequency, Monetary) segmentation on customer transaction data. The segmentation aims to classify customers into distinct groups based on their purchasing behavior, allowing for more targeted marketing and customer relationship management strategies.
+The goal of this project is to perform RFM (Retency, Frequency, Monetary) segmentation on customer transaction data. The segmentation aims to classify customers into distinct groups based on their purchasing behavior, allowing for more targeted marketing and customer relationship management strategies.
 
 **Project Objectives:**
-1. Calculate RFM metrics (Recency, Frequency, and Monetary Value) for each customer.
+1. Calculate RFM metrics (Retency, Frequency, and Monetary Value) for each customer.
 2. Assign scores to each RFM metric based on quartiles.
 3. Concatenate RFM scores to create unique RFM segments.
 4. Classify customers into defined segments (e.g., Loyal Customers, Potential Churners) based on their RFM scores.
@@ -13,16 +13,17 @@ The goal of this project is to perform RFM (Recency, Frequency, Monetary) segmen
 This project is implemented using MySQL for data processing and segmentation, and Python for data visualization.
 
 1. **Data Extraction**: Retrieve relevant customer information (e.g., customer name, city, country), sales frequency, and monetary value for analysis.
-2. **Recency Calculation**: Calculate the recency metric by determining the days since the last purchase, based on the final date in the dataset.
-3. **Score Calculation**: Use the `ntile` function to divide Recency, Frequency, and Monetary Value into quartiles, creating a score for each metric.
+2. **Retency Calculation**: Calculate the retency metric by determining the days since the last purchase, based on the final date in the dataset.
+3. **Score Calculation**: Use the `ntile` function to divide Retency, Frequency, and Monetary Value into quartiles, creating a score for each metric.
 4. **RFM Segmentation**: Concatenate the scores to create unique RFM scores and assign customers to predefined segments.
 5. **Data Visualization**: Visualize the customer segments and insights derived from the RFM analysis using Python libraries (e.g., Matplotlib, Seaborn) for enhanced analysis and presentation.
+
 ## SQL Code for RFM Segmentation
 
 Below is the SQL code used for this project. The code is broken down into four Common Table Expressions (CTEs) for clarity and modularity:
 
 ### CTE1: Initial Aggregation
-The first CTE (`cte1`) aggregates data by calculating Frequency (count of unique orders), Monetary Value (total sales), and retrieving the Last Order Date for each customer. It also fetches the final date from the dataset to assist with Recency calculation.
+The first CTE (`cte1`) aggregates data by calculating Frequency (count of unique orders), Monetary Value (total sales), and retrieving the Last Order Date for each customer. It also fetches the final date from the dataset to assist with Retency calculation.
 
 ```sql
 with cte1 as (
@@ -38,8 +39,8 @@ with cte1 as (
 )
 ```
 
-### CTE2: Recency Calculation
-The second CTE (`cte2`) calculates the Recency metric for each customer. It finds the difference between the Final Date and the Last Order Date, adding 1 to ensure the last day is included.
+### CTE2: Retency Calculation
+The second CTE (`cte2`) calculates the Retency metric for each customer. It finds the difference between the Final Date and the Last Order Date, adding 1 to ensure the last day is included.
 
 ```sql
 cte2 as (
@@ -49,7 +50,7 @@ cte2 as (
 ```
 
 ### CTE3: Scoring Each Metric
-The third CTE (`cte3`) uses quartiles to score each metric (Recency, Frequency, and Monetary Value) based on customer data. Higher scores represent better customer behavior for each metric.
+The third CTE (`cte3`) uses quartiles to score each metric (Retency, Frequency, and Monetary Value) based on customer data. Higher scores represent better customer behavior for each metric.
 
 ```sql
 cte3 as (
