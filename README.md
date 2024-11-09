@@ -10,13 +10,13 @@ The goal of this project is to perform RFM (Retency, Frequency, Monetary) segmen
 4. Classify customers into defined segments (e.g., Loyal Customers, Potential Churners) based on their RFM scores.
 
 ## Methodology
-This project is implemented using MySQL for data processing and segmentation, and Python for data visualization.
+This project is implemented using `MySQL` for data processing and segmentation, and Python for data visualization.
 
 1. **Data Extraction**: Retrieve relevant customer information (e.g., customer name, city, country), sales frequency, and monetary value for analysis.
 2. **Retency Calculation**: Calculate the retency metric by determining the days since the last purchase, based on the final date in the dataset.
 3. **Score Calculation**: Use the `ntile` function to divide Retency, Frequency, and Monetary Value into quartiles, creating a score for each metric.
 4. **RFM Segmentation**: Concatenate the scores to create unique RFM scores and assign customers to predefined segments.
-5. **Data Visualization**: Visualize the customer segments and insights derived from the RFM analysis using Python libraries (e.g., Matplotlib, Seaborn) for enhanced analysis and presentation.
+5. **Data Visualization**: Visualize the customer segments and insights derived from the RFM analysis using Python libraries (e.g., `Matplotlib`, `Seaborn`, `Plotly`) for enhanced analysis and presentation.
 
 ## SQL Code for RFM Segmentation
 
