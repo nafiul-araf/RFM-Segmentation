@@ -26,25 +26,25 @@ with cte1 as (
 ), 
 
 cte2 as (
-    -- Adds a new column to calculate recency for each customer by finding the difference between the final date 
+    -- Adds a new column to calculate retency for each customer by finding the difference between the final date 
     -- and the customer's last order date, adding 1 to include the last day.
-    select *, datediff(final_date, last_order_date) + 1 as recency
+    select *, datediff(final_date, last_order_date) + 1 as retency
     from cte1
 ),
 
 cte3 as (
-    -- Creates recency, frequency, and monetary scores for each customer by dividing the dataset into quartiles.
-    -- Higher scores imply better customer metrics for recency, frequency, and monetary value.
+    -- Creates retency, frequency, and monetary scores for each customer by dividing the dataset into quartiles.
+    -- Higher scores imply better customer metrics for retency, frequency, and monetary value.
     select *, 
-           ntile(4) over(order by recency desc) as recency_score,
+           ntile(4) over(order by retency desc) as retency_score,
            ntile(4) over(order by frequency) as frequency_score,
            ntile(4) over(order by monetary_value) as monetary_score
     from cte2
 ),
 
 cte4 as (
-    -- Concatenates the recency, frequency, and monetary scores into a combined RFM score for each customer.
-    select *, concat(recency_score, frequency_score, monetary_score) as rfm_score
+    -- Concatenates the retency, frequency, and monetary scores into a combined RFM score for each customer.
+    select *, concat(retency_score, frequency_score, monetary_score) as rfm_score
     from cte3
 )
 
@@ -60,49 +60,3 @@ select *,
         else 'Other' -- Fallback for any RFM scores that don't match the specified patterns
     end as segment
 from cte4;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
