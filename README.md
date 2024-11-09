@@ -44,7 +44,7 @@ The second CTE (`cte2`) calculates the Retency metric for each customer. It find
 
 ```sql
 cte2 as (
-    select *, datediff(final_date, last_order_date) + 1 as recency
+    select *, datediff(final_date, last_order_date) + 1 as retency
     from cte1
 )
 ```
@@ -55,7 +55,7 @@ The third CTE (`cte3`) uses quartiles to score each metric (Retency, Frequency, 
 ```sql
 cte3 as (
     select *, 
-           ntile(4) over(order by recency desc) as recency_score,
+           ntile(4) over(order by retency desc) as retency_score,
            ntile(4) over(order by frequency) as frequency_score,
            ntile(4) over(order by monetary_value) as monetary_score
     from cte2
@@ -93,7 +93,7 @@ The aim is to analyze customer data segmented by different characteristics to un
 ## Purpose
 
 The provided code performs the following tasks:
-1. Aggregates customer data by segment to visualize behavior patterns for frequency, monetary value, and recency.
+1. Aggregates customer data by segment to visualize behavior patterns for frequency, monetary value, and retency.
 2. Bins customer counts to allow for easier comparison across categories.
 3. Visualizes segment-wise and country-wise customer metrics using heatmaps and scatter geo maps, providing insights into where strategic engagement efforts should be focused.
 
@@ -101,35 +101,35 @@ The provided code performs the following tasks:
 
 ### Segment-wise Heatmap Visualization
 
-This section of the code aggregates data by customer segment and rounds the values to two decimal points. It then creates a combined heatmap to display recency, frequency, and monetary value for each segment, binned by customer count categories.
+This section of the code aggregates data by customer segment and rounds the values to two decimal points. It then creates a combined heatmap to display retency, frequency, and monetary value for each segment, binned by customer count categories.
 
 ```python
-# Aggregating data by segment and rounding to two decimal places 
+# Aggregating data by segment and rounding to two decimal places
 segment_df = df.groupby('segment').agg({
-    'recency': 'mean',
+    'retency': 'mean',
     'frequency': 'mean',
     'monetary_value': 'mean',
     'customer_name': 'count'
 }).reset_index()
 segment_df.rename(columns={'customer_name': 'customer_count'}, inplace=True)
-segment_df[['recency', 'frequency', 'monetary_value']] = segment_df[['recency', 'frequency', 'monetary_value']].round(2)
+segment_df[['retency', 'frequency', 'monetary_value']] = segment_df[['retency', 'frequency', 'monetary_value']].round(2)
 
-# Bin the customer counts into categories 
+# Bin the customer counts into categories
 segment_df['customer_count_bin'] = pd.cut(segment_df['customer_count'], bins=5, labels=False)
 
 # Melt the DataFrame to long format for combined heatmap
 melted_df = segment_df.melt(id_vars=['segment', 'customer_count_bin'],
-                            value_vars=['recency', 'frequency', 'monetary_value'],
+                            value_vars=['retency', 'frequency', 'monetary_value'],
                             var_name='metric',
                             value_name='value')
 
-# Pivot the table to have customer count bins as columns, segment and metric as indices 
+# Pivot the table to have customer count bins as columns, segment and metric as indices
 pivot_table = melted_df.pivot_table(index=['segment', 'metric'], columns='customer_count_bin', values='value')
 
 # Plot the combined heatmap
 plt.figure(figsize=(14, 10))
 sns.heatmap(pivot_table, cmap="YlGnBu", annot=True, fmt=".2f", linewidths=0.5, cbar_kws={'label': 'Metric Value'})
-plt.title("Combined Segment-wise Heatmap of Recency, Frequency, and Monetary Value")
+plt.title("Combined Segment-wise Heatmap of retency, Frequency, and Monetary Value")
 plt.xlabel("Customer Count Bin")
 plt.ylabel("Segment and Metric")
 plt.show()
@@ -138,36 +138,36 @@ plt.show()
 
 #### Summary Interpretation of Updated Segment-wise Heatmap
 
-This heatmap provides a high-level overview of customer behavior for different segments in terms of **recency**, **frequency**, and **monetary value**:
+This heatmap provides a high-level overview of customer behavior for different segments in terms of **retency**, **frequency**, and **monetary value**:
 
 - **Loyal Customers**: Highly engaged with high monetary value, indicating significant revenue contributions.
 - **Big Spenders**: Noted for high spending levels but with less frequent transactions.
 - **New Customers**: Recent engagement with lower monetary contributions, mainly concentrated in certain countries.
-- **Potential Churners**: Characterized by high recency and low frequency, highlighting a need for re-engagement.
+- **Potential Churners**: Characterized by high retency and low frequency, highlighting a need for re-engagement.
 
 The color intensity correlates with monetary value, guiding where to focus retention strategies.
 
 ### Country-wise Segment Map Visualization
-In this section, customer data is aggregated by country and segment, then visualized on a scatter geo map. This allows for the visualization of customer segments by country, with key metrics such as recency, frequency, and monetary value presented through hover data for easy access.
+In this section, customer data is aggregated by country and segment, then visualized on a scatter geo map. This allows for the visualization of customer segments by country, with key metrics such as retency, frequency, and monetary value presented through hover data for easy access.
 
 ```python
 # Calculate aggregate metrics by country (or city)
 location_df = df.groupby(['country', 'segment']).agg({
-    'recency': 'mean',
+    'retency': 'mean',
     'frequency': 'mean',
     'monetary_value': 'mean',
     'customer_name': 'count'
 }).reset_index()
 location_df.rename(columns={'customer_name': 'customer_count'}, inplace=True)
 
-# Map with Segment Information by Country
+# Map 4: Map with Segment Information by Country
 fig = px.scatter_geo(location_df, locations="country", locationmode="country names",
                      size="frequency", color="segment",  # Color by segment
                      hover_name="country",
                      hover_data={
                          "monetary_value": ':.2f',
                          "frequency": ':.2f',
-                         "recency": ':.2f',
+                         "retency": ':.2f',
                          "segment": True  # Show segment in hover data
                      },
                      title="Map with Segment Information by Country",
@@ -191,13 +191,13 @@ This geographic visualization highlights variations in customer engagement by co
 - **Loyal Customers**: Found across multiple countries, with Spain displaying especially high frequency and monetary values.
 - **Big Spenders**: Particularly prevalent in the USA, contributing substantial monetary value with moderate frequency.
 - **New Customers**: Primarily based in Belgium, showing recent but lower-value engagement.
-- **Potential Churners**: Found in countries like France, Switzerland, and the USA, displaying high recency and lower frequency, indicating a risk of disengagement.
+- **Potential Churners**: Found in countries like France, Switzerland, and the USA, displaying high retency and lower frequency, indicating a risk of disengagement.
 
 This map enables targeted strategies by country and segment, assisting in identifying high-value segments and re-engaging potential churners.
 
 ## Conclusion
 
-This analysis uses customer segmentation and geographic data visualization to identify key patterns in customer behavior. By leveraging metrics such as recency, frequency, and monetary value:
+This analysis uses customer segmentation and geographic data visualization to identify key patterns in customer behavior. By leveraging metrics such as retency, frequency, and monetary value:
 
 - **High-value segments** like Loyal Customers can be retained and rewarded.
 - **Potential Churners** can be re-engaged with targeted campaigns.
